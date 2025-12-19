@@ -453,14 +453,21 @@ func (t *Terminal) runPipelineWithOutput(pipeline []string, finalOut io.Writer) 
 			pipeCloser = pipeW
 		}
 
-		go func(args []string, stdin io.Reader, stdout io.Writer, closer io.Closer) {
+		go func(args []string, stdin io.Reader, stdout io.Writer, outCloser io.Closer) {
 			defer wg.Done()
-			if closer != nil {
-				// 如果传入了 typed nil，closer != nil 为真，但调用 Close() 会 panic
-				defer closer.Close()
+
+			// 执行完后关闭输出端，通知下游 EOF
+			if outCloser != nil {
+				defer outCloser.Close()
 			}
+
+			// 如果输入端是管道（PipeReader），执行完后必须关闭它
+			if r, ok := stdin.(io.Closer); ok {
+				defer r.Close()
+			}
+
 			t.runCommand(args, stdin, stdout)
-		}(args, in, out, pipeCloser) // 使用处理过的 pipeCloser
+		}(args, in, out, pipeCloser)
 
 		in = pipeR
 	}

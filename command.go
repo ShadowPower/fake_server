@@ -253,7 +253,9 @@ func (t *Terminal) runCommand(args []string, in io.Reader, out io.Writer) {
 
 	case "grep":
 		if len(args) < 2 {
-			return // 忽略 stdin 如果没有 pattern
+			fmt.Fprintln(out, "Usage: grep [PATTERN] [FILE]...")
+			t.lastExitCode = 1
+			return 
 		}
 		pattern := args[1]
 		files := args[2:]
