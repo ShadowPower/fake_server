@@ -574,7 +574,7 @@ func (g *Game) ResetGame() {
 // 武器定义库
 func initWeaponDefs() map[string]WeaponDef {
 	return map[string]WeaponDef{
-		"PING":  {ID: "PING", Name: "ICMP脉冲", Description: "向最近的敌人发射数据包", Type: 0, Cooldown: 0.6, Damage: 12, Speed: 4.0, Count: 1, Color: ColHiCyan},
+		"PING":  {ID: "PING", Name: "ICMP脉冲", Description: "向最近的敌人发射数据包", Type: 0, Cooldown: 0.6, Damage: 12, Speed: 4.0, Count: 1, Color: ColGreen},
 		"DDOS":  {ID: "DDOS", Name: "DDOS洪流", Description: "快速发射大量低伤子弹", Type: 0, Cooldown: 0.15, Damage: 4, Speed: 5.5, Spread: 0.3, Count: 1, Color: ColHiYellow},
 		"SSH":   {ID: "SSH", Name: "SSH隧道", Description: "建立一条穿透性的激光连接", Type: 1, Cooldown: 1.8, Damage: 25, Duration: 0.2, Color: ColHiGreen, Pierce: 99},
 		"FW":    {ID: "FW", Name: "防火墙", Description: "环绕自身的防御火球", Type: 2, Cooldown: 2.0, Damage: 8, Speed: 2.0, Count: 2, Color: ColHiRed, Knockback: 3.0},

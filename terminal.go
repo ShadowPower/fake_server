@@ -411,13 +411,21 @@ func (t *Terminal) execPipeline(cmdline string) {
 func (t *Terminal) runPipelineWithOutput(pipeline []string, finalOut io.Writer) {
 	var commands [][]string
 	for _, cmdStr := range pipeline {
-		commands = append(commands, parseArgs(cmdStr))
+		args := parseArgs(cmdStr)
+		// 预先过滤掉空命令
+		if len(args) > 0 {
+			commands = append(commands, args)
+		}
+	}
+
+	// 如果所有命令都为空（例如仅输入了 "||"），直接返回
+	if len(commands) == 0 {
+		return
 	}
 
 	if len(commands) == 1 {
-		if len(commands[0]) > 0 {
-			t.runCommand(commands[0], &bytes.Buffer{}, finalOut)
-		}
+		// 单个命令直接执行，不需要建立管道
+		t.runCommand(commands[0], &bytes.Buffer{}, finalOut)
 		return
 	}
 
@@ -425,9 +433,6 @@ func (t *Terminal) runPipelineWithOutput(pipeline []string, finalOut io.Writer) 
 	var in io.Reader = &bytes.Buffer{}
 
 	for i, args := range commands {
-		if len(args) == 0 {
-			continue
-		}
 		wg.Add(1)
 
 		var out io.Writer
